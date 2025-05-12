@@ -1,0 +1,5 @@
+Using py2exp.py python3 script to generate "cmt2300_regs.c" RF configuration file.
+
+first use RFPDK export the config(exp) file
+then at terminal ,
+run python py2exp.py yourfile.exp
