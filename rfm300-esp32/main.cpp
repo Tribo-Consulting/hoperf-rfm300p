@@ -47,6 +47,7 @@ void setup(void)
 	pinMode(LED1, OUTPUT);
 	digitalWrite(LED1, LOW);
 	Serial.begin(115200);
+	Serial.printf("== rfm-300p-esp32 ==\r\n");
 
 	// radio configure
 	FixedPktLength = false;

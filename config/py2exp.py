@@ -40,7 +40,7 @@ with open(sys.argv[1], 'r') as f:
             reg_value.append(m.group(0).replace('  0x', ''))
     f.close()
 
-reg_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),'..', 'rfm300','cmt2300_regs.c')
+reg_file = os.path.join(os.path.dirname(os.path.abspath(sys.argv[1])),'cmt2300_regs.c')
 with open(reg_file,'w') as f:
     write_reg_head(reg_head)
     pos = 0
