@@ -23,7 +23,7 @@ byte bGoTx(void)
 	for(i=0; i<50; i++){
 		delayMicroseconds(100);	
 		tmp = (MODE_MASK_STA & bSpi3Read(CMT23_MODE_STA));	
-		if(tmp==MODE_STA_TX)
+		if(tmp==MODE_STA_SLEEP /*MODE_STA_TX*/)
 			break;
 	}
 	if(i>=50)
