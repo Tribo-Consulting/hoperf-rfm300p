@@ -17,13 +17,15 @@ State Ctrl
 **********************************************************/
 byte bGoTx(void)
 {
-	byte tmp, i;
+	byte status1, i, status2;
 
+	status1 = (MODE_MASK_STA & bSpi3Read(CMT23_MODE_STA));	
 	vSpi3Write(((word)CMT23_MODE_CTL<<8)+MODE_GO_TX);		
 	for(i=0; i<50; i++){
 		delayMicroseconds(100);	
-		tmp = (MODE_MASK_STA & bSpi3Read(CMT23_MODE_STA));	
-		if(tmp==MODE_STA_SLEEP /*MODE_STA_TX*/)
+		status2 = (MODE_MASK_STA & bSpi3Read(CMT23_MODE_STA));	
+		//if(status2 == MODE_STA_SLEEP /*MODE_STA_TX*/)
+		if(status2 == 0x0F) //status bits go to 0x0F during TX?
 			break;
 	}
 	if(i>=50)
