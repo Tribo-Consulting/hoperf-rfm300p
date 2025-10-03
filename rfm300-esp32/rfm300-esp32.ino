@@ -2,13 +2,11 @@
 #include "RFM300_Driver.h"
 #include "cmt2300_regs.h"
 #include <stdio.h>
-#include "per.h"
 
 char strBase[] = "RFM300P test";
 byte tx_buf[32] = {0};
 byte rx_buf[32] = {0};
 byte mode = 0; // 0: receive , 1: transmitter
-byte perMode = 0; //0: send msg ASCII number field. 1: send raw integer field.
 
 #define KEY1 7 //2 // arduino pin 2 for select tx/rx mode
 #define LED1 8 //3 // arduino pin 3 for led indicate
@@ -78,7 +76,7 @@ void loop(void)
 	byte tmp, i, flg;
 	int8_t rssi;
 	unsigned long currentMillis;
-
+	
 	if (mode)
 	{
 		if (1) //digitalRead(KEY1) == 0)
@@ -86,39 +84,30 @@ void loop(void)
 			//while (digitalRead(KEY1) == 0);
 
 			digitalWrite(LED1, HIGH);
-			bGoStandby();
-			bIntSrcFlagClr();
 
-			//assemble msg.
-			if(perMode)
-			{
-					//&tx_buf[PER_FIELD_INDEX];
-			}
-			else
-			{
-				sprintf((char*)tx_buf, "%s %05d", strBase, tx_cnt++);
-				vSetTxPayloadLength(strlen((char*)tx_buf));
-			}
-			
+			sprintf((char*)tx_buf, "%s %05d", strBase, tx_cnt++);
+			Serial.printf("TX: %s\r\n", tx_buf);
+
+			bIntSrcFlagClr();
+			vSetTxPayloadLength(strlen((char*)tx_buf));
 			vEnableWrFifo();
 			vSpi3BurstWriteFIFO(tx_buf, strlen((char*)tx_buf));
-			
 			bGoTx();
+		
 			previousMillis = millis();
-			for (;;)
+			while(!GPO3_H())
 			{
-				if (GPO3_H())
-					break;
 				currentMillis = millis();
 				if (currentMillis - previousMillis >= timeout)
+				{
+					Serial.printf("TX: timeout.\r\n");
 					break;
+				}
 			}
+			
+			bGoStandby();
 
-			bIntSrcFlagClr();
 			digitalWrite(LED1, LOW);
-
-			Serial.printf("TX: %s\r\n", tx_buf);
-			delay(1000);
 		}
 	}
 	else
@@ -147,4 +136,6 @@ void loop(void)
 		}
 		// mcu can sleep to wait radio event
 	}
+
+	delay(1000);
 }

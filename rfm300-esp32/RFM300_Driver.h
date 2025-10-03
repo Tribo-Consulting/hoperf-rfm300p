@@ -19,7 +19,7 @@
 /** Hardware brief **/    
 #define GPO1_PIN	8
 #define GPO2_PIN	7
-#define GPO3_PIN	39 //6
+#define GPO3_PIN	45 //6
 #define TX_ANT_PIN 5
 #define RX_ANT_PIN 4
 
